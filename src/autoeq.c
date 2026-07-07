@@ -483,6 +483,8 @@ static void treble_rolloff(const f32 *restrict f, f32 *restrict r, f32 f_treble)
 {
 	i32 treble_idx = search(f, K, f_treble),
 		n_treble = K - treble_idx;
+	
+	if (n_treble <= 1) return;
 
 	f32 inv = 1.f / (f32)(n_treble - 1);
 
@@ -497,8 +499,8 @@ f32 preprocess(
 	const f32 *restrict f, const f32 *restrict dst,
 	const f32 *restrict src, f32 *restrict r, const Smooth *smooth, bool demean)
 {
-	f32 F_TREBLE_SMOOTH   = 16000.f,
-		F_TREBLE_UNSMOOTH = 18500.f;
+	f32 F_TREBLE_SMOOTH   = 20000.f,
+		F_TREBLE_UNSMOOTH = 20000.f;
 
 	f32 b[K];
 	memcpy(b, src, sizeof(*src) * K);
