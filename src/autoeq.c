@@ -439,24 +439,43 @@ static void adaptive_smooth(const Smooth *s, const f32 *restrict f, f32 *restric
 
 			/* positive / negative bias */
 			bias = s->bias_lo + (s->bias_md - s->bias_lo)*sgm(l, bias_l0, bias_l1)
-				              + (s->bias_hi - s->bias_md)*sgm(l, bias_l2, bias_l3),
+				              + (s->bias_hi - s->bias_md)*sgm(l, bias_l2, bias_l3);
 
-			a = 0.f,
-			c = 0.f;
+		f32 max_left = x_k, max_right = x_k;
+		bool clipped = false;
+		for (i32 j = -H; j < 0; ++j) {
+			i32 s_idx = (s_idx < 0) ? clip_idx : s_idx;
+			if (x[s_idx] > max_left) max_left = x[s_idx];
+		}
+		for (i32 j = 1; j <= H; ++j) {
+			i32 s_idx = k + j;
+			if (s_idx >= clip_idx) {
+				clipped = true;
+				break;
+			}
+			if (x[s_idx] > max_right) max_right = x[s_idx];
+		}
+		f32 dip_depth = fmax(0.f, fminf(max_left - x_k, max_right - x_k));
+		if (clipped && max_right <= x_k) dip_depth = 0.f;
+		
+		f32 effective_smooth_hi = 0.1f - (0.1f - s->smooth_hi) * sgm(dip_depth, 1.0f, 4.0f);
+		f32 current_sigma = s->smooth_lo + (effective_smooth_hi - s->smooth_lo)*sgm(l, smooth_l0, smooth_l1);
+		
+		f32 a = 0.f, c = 0.f;
 
 		for (i32 j = -H; j <= H; ++j) {
-			i32 s = k + j;
-			s = s < 0 ? 0
-			  : s > clip_idx ? clip_idx
-			  : s;
+			i32 s_idx = k + j;
+			s_idx = s_idx < 0 ? 0
+			  : s_idx > clip_idx ? clip_idx
+			  : s_idx;
 
-			f32 x_s = x[s],
+			f32 x_s = x[s_idx],
 				d_spatial = sq((f32)j * sigma),
 				d_range   = bias * (x_s - x_k);
 
 			f32 w = expf(-.5f*d_spatial + d_range);
 
-			a += w * x[s];
+			a += w * x[s_idx];
 			c += w;
 		}
 
