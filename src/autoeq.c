@@ -604,7 +604,7 @@ typedef struct {
 
 #define A(...) {__VA_ARGS__}
 #define FILTERS(X) \
-X(LSC, A(20.f, 20000.f), A(-24.f, 24.f), A(.4f, 3.f)) \
+	X(LSC, A(20.f, 20000.f), A(-24.f, 24.f), A(.4f, 3.f)) \
 	X(HSC, A(20.f, 20000.f), A(-24.f, 24.f), A(.4f, 3.f)) \
 	X(PK , A(20.f, 20000.f), A(-24.f, 24.f), A(.4f, 4.f)) \
 	X(PK , A(20.f, 20000.f), A(-24.f, 24.f), A(.4f, 4.f)) \
