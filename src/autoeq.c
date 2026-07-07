@@ -570,7 +570,7 @@ const Smooth *get_ie_smooth(void)
 		.bias_f0 = 10000.f, .bias_f1 = 13000.f,
 		.bias_f2 = 14000.f, .bias_f3 = 20000.f,
 
-		.clip_f = 18500.f,
+		.clip_f = 20000.f,
 	};
 
 	return &IE_SMOOTH;
@@ -591,7 +591,7 @@ const Smooth *get_oe_smooth(void)
 		.bias_f0 = 6000.f, .bias_f1 =  9000.f,
 		.bias_f2 = 9000.f, .bias_f3 = 20000.f,
 
-		.clip_f = 17000.f,
+		.clip_f = 20000.f,
 	};
 
 	return &OE_SMOOTH;
