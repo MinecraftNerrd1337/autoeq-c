@@ -23,5 +23,8 @@ jobs:
       - name: Build
         run: cc src/*.c -lm -o autoeq
 
-      - name: Verify binary exists
-        run: ls -lh autoeq
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: autoeq-linux
+          path: autoeq
